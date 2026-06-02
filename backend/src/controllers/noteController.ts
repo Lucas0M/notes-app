@@ -7,7 +7,9 @@ type requestBody = {
 };
 
 export const getAllNotes = async (req: Request, res: Response) => {
-  const notes = await prisma.note.findMany();
+  const notes = await prisma.note.findMany({
+    where: { userId: req.userId },
+  });
   res.json(notes);
 };
 
@@ -21,7 +23,7 @@ export const getNoteById = async (req: Request, res: Response) => {
 export const createNote = async (req: Request, res: Response) => {
   const { title, content }: requestBody = req.body;
   const note = await prisma.note.create({
-    data: { title, content },
+    data: { title, content, userId: req.userId },
   });
 
   res.status(201).json(note);

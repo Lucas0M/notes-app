@@ -6,8 +6,11 @@ import {
   updateNote,
   deleteNote,
 } from "../controllers/noteController";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router();
+
+router.use(authMiddleware);
 
 router.get("/", getAllNotes);
 router.get("/:id", getNoteById);
