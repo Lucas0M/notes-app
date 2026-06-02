@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { createNote, deleteNote, getAllNotes } from "../services/noteService";
 import { type Note } from "../types";
+import { logout } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllNotes().then(setNotes); // nao sei oq isso faz sinceramente
@@ -24,10 +27,23 @@ function NotesPage() {
     setNotes(notes.filter((n) => n.id !== id));
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen bg-gray-950 text-white p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">My Notes</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">My Notes</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white text-sm px-4 py-2 rounded-lg transition-colors"
+          >
+            Logout
+          </button>
+        </div>
 
         <div className="bg-gray-900 rounded-xl p-6 mb-8 flex flex-col gap-3">
           <input

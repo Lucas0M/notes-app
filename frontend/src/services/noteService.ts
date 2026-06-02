@@ -1,9 +1,18 @@
 import { type Note } from "../types";
 
-const API_URL = "http://localhost:3333/notes";
+const API_URL = "http://localhost:3333";
+
+const getToken = () => localStorage.getItem("token");
+
+const authHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${getToken()}`,
+});
 
 export const getAllNotes = async (): Promise<Note[]> => {
-  const response = await fetch(API_URL);
+  const response = await fetch(`${API_URL}/notes`, {
+    headers: authHeaders(),
+  });
   return response.json();
 };
 
@@ -11,9 +20,9 @@ export const createNote = async (
   title: string,
   content: string,
 ): Promise<Note> => {
-  const response = await fetch(API_URL, {
+  const response = await fetch(`${API_URL}/notes`, {
     method: "POST",
-    headers: { "Content-type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify({ title, content }),
   });
 
@@ -21,7 +30,8 @@ export const createNote = async (
 };
 
 export const deleteNote = async (id: number): Promise<void> => {
-  await fetch(`${API_URL}/${id}`, {
+  await fetch(`${API_URL}/notes/${id}`, {
     method: "DELETE",
+    headers: authHeaders(),
   });
 };
