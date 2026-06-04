@@ -1,6 +1,6 @@
 import { type Note } from "../types";
 
-const API_URL = "http://localhost:3333";
+const API_URL = "https://notes-app-ba6y.onrender.com";
 
 const getToken = () => localStorage.getItem("token");
 
