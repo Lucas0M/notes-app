@@ -10,7 +10,10 @@ const PORT = 3333;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://notes-app-iota-azure.vercel.app",
+    ],
   }),
 );
 
