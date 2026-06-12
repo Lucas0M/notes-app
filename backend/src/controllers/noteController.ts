@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../prisma";
+import { noteRepository } from "../repositories/note.repository";
 
 type requestBody = {
   title: string;
@@ -7,23 +7,24 @@ type requestBody = {
 };
 
 export const getAllNotes = async (req: Request, res: Response) => {
-  const notes = await prisma.note.findMany({
-    where: { userId: req.userId },
-  });
+  const notes = await noteRepository.findAllByUser(req.userId);
+
   res.json(notes);
 };
 
 export const getNoteById = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
-  const note = await prisma.note.findUnique({ where: { id } });
+  const note = await noteRepository.findById(id);
 
   res.json(note);
 };
 
 export const createNote = async (req: Request, res: Response) => {
   const { title, content }: requestBody = req.body;
-  const note = await prisma.note.create({
-    data: { title, content, userId: req.userId },
+  const note = await noteRepository.create({
+    title,
+    content,
+    userId: req.userId,
   });
 
   res.status(201).json(note);
@@ -33,19 +34,14 @@ export const updateNote = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
   const { title, content }: requestBody = req.body;
 
-  const note = await prisma.note.update({
-    where: { id },
-    data: { title, content },
-  });
+  const note = await noteRepository.update(id, { title, content });
 
   res.json(note);
 };
 
 export const deleteNote = async (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
-  await prisma.note.delete({
-    where: { id },
-  });
+  await noteRepository.delete(id);
 
   res.status(204).send();
 };
